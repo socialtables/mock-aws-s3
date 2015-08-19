@@ -316,4 +316,26 @@ describe('S3', function () {
 		expect(s3.config.update).to.be.a('function');
 	});
 
+	describe("getSignedUrl", function () {
+
+		it("should respond with a url string", function(done) {
+			var params = {Bucket: "myBucket", Key: "myKey"};
+			s3.getSignedUrl("getObject", params, function(err, data) {
+				expect(err).to.be.null;
+				expect(data).to.equal("https://s3.amazonaws.com/myBucket/myKey");
+				done();
+			});
+		});
+
+		it("should respond with an error with incomplete params", function(done) {
+			// missing Bucket key
+			var params = {Key: "myKey"};
+			s3.getSignedUrl("getObject", params, function(err, data) {
+				expect(err).to.match(/Error/);
+				done();
+			});
+		});
+
+	});
 });
+
